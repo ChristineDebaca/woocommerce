@@ -19,13 +19,15 @@ class WC_Gateway_Paypal_IPN_Handler extends WC_Gateway_Paypal_Response {
 	 *
 	 * @param bool $sandbox
 	 * @param string $receiver_email
+	 * @param string $payment_action
 	 */
-	public function __construct( $sandbox = false, $receiver_email = '' ) {
+	public function __construct( $sandbox = false, $receiver_email = '', $payment_action = '' ) {
 		add_action( 'woocommerce_api_wc_gateway_paypal', array( $this, 'check_response' ) );
 		add_action( 'valid-paypal-standard-ipn-request', array( $this, 'valid_response' ) );
 
 		$this->receiver_email = $receiver_email;
 		$this->sandbox        = $sandbox;
+		$this->payment_action = $payment_action;
 	}
 
 	/**
@@ -55,7 +57,7 @@ class WC_Gateway_Paypal_IPN_Handler extends WC_Gateway_Paypal_Response {
 			$posted['payment_status'] = strtolower( $posted['payment_status'] );
 
 			// Sandbox fix.
-			if ( isset( $posted['test_ipn'] ) && 1 == $posted['test_ipn'] && 'pending' == $posted['payment_status'] ) {
+			if ( 'authorization' !== $this->payment_action && isset( $posted['test_ipn'] ) && 1 == $posted['test_ipn'] && 'pending' == $posted['payment_status'] ) {
 				$posted['payment_status'] = 'completed';
 			}
 

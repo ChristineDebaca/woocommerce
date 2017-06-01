@@ -63,7 +63,7 @@ class WC_Gateway_Paypal extends WC_Payment_Gateway {
 			$this->enabled = 'no';
 		} else {
 			include_once( dirname( __FILE__ ) . '/includes/class-wc-gateway-paypal-ipn-handler.php' );
-			new WC_Gateway_Paypal_IPN_Handler( $this->testmode, $this->receiver_email );
+			new WC_Gateway_Paypal_IPN_Handler( $this->testmode, $this->receiver_email, $this->get_option( 'paymentaction' ) );
 
 			if ( $this->identity_token ) {
 				include_once( dirname( __FILE__ ) . '/includes/class-wc-gateway-paypal-pdt-handler.php' );
